@@ -83,13 +83,42 @@
 	
 	        console.log('props');
 	        _this.state = {
+	            receivedMessage: "",
 	            name: "",
+	            messageToSend: "",
 	            account: {}
 	        };
+	        _this.sendMessage = _this.sendMessage.bind(_this);
+	        _this.onMessage = _this.onMessage.bind(_this);
+	        _this.handleChange = _this.handleChange.bind(_this);
+	        console.log('constructor this:%O', _this);
 	        return _this;
 	    }
 	
 	    _createClass(App, [{
+	        key: "componentDidMount",
+	        value: function componentDidMount() {
+	            _lightningContainer2.default.addMessageHandler(this.onMessage);
+	        }
+	    }, {
+	        key: "onMessage",
+	        value: function onMessage(msg) {
+	            var name = msg.name;
+	            console.log('received message name:%O', msg);
+	            this.setState({ receivedMessage: msg.value });
+	        }
+	    }, {
+	        key: "sendMessage",
+	        value: function sendMessage(event) {
+	            console.log('message is being sent:%O', this.state.messageToSend);
+	            _lightningContainer2.default.sendMessage({ name: "General", value: this.state.messageToSend });
+	        }
+	    }, {
+	        key: "handleChange",
+	        value: function handleChange(e) {
+	            this.setState({ messageToSend: e.target.value });
+	        }
+	    }, {
 	        key: "render",
 	        value: function render() {
 	            return _react2.default.createElement(
@@ -109,18 +138,16 @@
 	                        _react2.default.createElement(
 	                            "div",
 	                            { className: "slds-media slds-media--center slds-has-flexi-truncate" },
-	                            _react2.default.createElement(
-	                                "div",
-	                                { className: "slds-media__figure" },
-	                                "Test"
-	                            ),
+	                            _react2.default.createElement("div", { className: "slds-media__figure" }),
 	                            _react2.default.createElement(
 	                                "div",
 	                                { className: "slds-media__body" },
+	                                _react2.default.createElement("input", { type: "text", defaultValue: "LCC", value: this.state.messageToSend, onChange: this.handleChange, className: "slds-input" }),
 	                                _react2.default.createElement(
 	                                    "h3",
 	                                    { className: "slds-text-heading--small slds-truncate" },
-	                                    "Test App"
+	                                    " Message that we received is ",
+	                                    this.state.receivedMessage
 	                                )
 	                            )
 	                        ),
@@ -132,13 +159,8 @@
 	                                { className: "slds-button-group" },
 	                                _react2.default.createElement(
 	                                    "button",
-	                                    { className: "slds-button slds-button--neutral slds-button--small" },
-	                                    "New"
-	                                ),
-	                                _react2.default.createElement(
-	                                    "button",
-	                                    { className: "slds-button slds-button--neutral slds-button--small" },
-	                                    "Show More"
+	                                    { className: "slds-button slds-button--neutral slds-button--small", onClick: this.sendMessage },
+	                                    "Send"
 	                                )
 	                            )
 	                        )
